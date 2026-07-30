@@ -11,7 +11,7 @@ interface Props {
 function ResultView({ evaluation, methodology, onBack, onNew }: Props) {
   const angle = Math.min(evaluation.nebula_score * 3.6, 360)
   const qualityLabel = methodology?.quality.input_label || methodology?.quality.label || 'Sensorial'
-  const productName = evaluation.product === 'cacao' ? 'Cacao' : 'Coffee'
+  const productName = evaluation.product === 'cacao' ? 'Cacao' : evaluation.product === 'wine' ? 'Wine' : 'Coffee'
 
   const exportJson = () => {
     api.getEvaluation(evaluation.public_id)

@@ -44,7 +44,7 @@ function Dashboard({ onNew, onView }: Props) {
         </div>
         <div className="kpi">
           <span>Productos activos</span>
-          <strong>Coffee · Cacao</strong>
+          <strong>Coffee · Cacao · Wine</strong>
         </div>
       </div>
 

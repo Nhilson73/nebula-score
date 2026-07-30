@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0] — 2026-07-30
+
+### Added
+
+- Metodología Nebula Score® Wine V1 en `methodologies/wine/v1.json`.
+- Motor de Wine (`backend/app/products/wine/engine.py`) con modelos Essential, Insight y Signature adaptados a fermentación alcohólica y crianza.
+- Selector de producto Wine en el frontend junto a Coffee y Cacao.
+- Documentación de metodología Wine en `docs/METHODOLOGY_WINE_V1.md`.
+- Tests del motor de Wine.
+
 ## [1.1.0] — 2026-07-30
 
 ### Added

@@ -6,7 +6,7 @@ import EvaluationForm from './components/EvaluationForm'
 import ResultView from './components/ResultView'
 
 type View = 'dashboard' | 'new' | 'result'
-type Product = 'coffee' | 'cacao'
+type Product = 'coffee' | 'cacao' | 'wine'
 
 function App() {
   const [product, setProduct] = useState<Product>('coffee')
@@ -28,7 +28,7 @@ function App() {
   }
 
   const handleView = (res: EvaluationResult) => {
-    if (res.product === 'coffee' || res.product === 'cacao') {
+    if (res.product === 'coffee' || res.product === 'cacao' || res.product === 'wine') {
       setProduct(res.product)
     }
     setResult(res)
@@ -44,7 +44,9 @@ function App() {
       <header className="hero">
         <div className="hero__content">
           <p className="eyebrow">Nebula Ecosystem®</p>
-          <h1>Nebula Score® {product === 'cacao' ? 'Cacao' : 'Coffee'} V1</h1>
+          <h1>
+            {`Nebula Score® ${product === 'cacao' ? 'Cacao' : product === 'wine' ? 'Wine' : 'Coffee'} V1`}
+          </h1>
           <p className="hero__lead">
             Calidad sensorial, control de fermentación e integridad de evidencia en una sola puntuación verificable.
           </p>
@@ -62,6 +64,13 @@ function App() {
               onClick={() => { setProduct('cacao'); setView('dashboard') }}
             >
               Cacao
+            </button>
+            <button
+              type="button"
+              className={product === 'wine' ? 'primary' : 'secondary'}
+              onClick={() => { setProduct('wine'); setView('dashboard') }}
+            >
+              Wine
             </button>
           </div>
         </div>
