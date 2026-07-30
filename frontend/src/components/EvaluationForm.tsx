@@ -96,17 +96,21 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
     setSaving(true)
     setError(null)
     try {
+      const toOneDecimal = (v: string | number) => {
+        const n = Number(v)
+        return Math.round(n * 10) / 10
+      }
       const payload = {
         ...form,
-        quality_input: Number(form.quality_input),
+        quality_input: Math.round(Number(form.quality_input) * 100) / 100,
         evidence_quality: Number(form.evidence_quality),
         process_values: Object.fromEntries(
-          Object.entries(form.process_values).map(([k, v]) => [k, Number(v)])
+          Object.entries(form.process_values).map(([k, v]) => [k, toOneDecimal(v)])
         ),
         integrity_values: Object.fromEntries(
-          Object.entries(form.integrity_values).map(([k, v]) => [k, Number(v)])
+          Object.entries(form.integrity_values).map(([k, v]) => [k, toOneDecimal(v)])
         ),
-        penalties: form.penalties.map((p) => ({ ...p, value: Number(p.value) })),
+        penalties: form.penalties.map((p) => ({ ...p, value: toOneDecimal(p.value) })),
       }
       const result = await api.createEvaluation(payload)
       onCreated(result)
@@ -146,7 +150,7 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
         <legend>Calidad sensorial</legend>
         <div className="grid two">
           <label>
-            Puntuación {qualityLabel}
+            {qualityLabel}
             <input
               type="number"
               min={methodology.quality.input_range.min}
