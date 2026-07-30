@@ -21,7 +21,7 @@ PRODUCTS = [
         "id": "wine",
         "name": "Nebula Score® Wine",
         "description": "Evaluación sensorial, cinética fermentativa y estabilidad para vinos.",
-        "available": False,
+        "available": True,
     },
 ]
 

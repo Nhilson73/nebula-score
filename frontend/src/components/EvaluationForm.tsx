@@ -40,7 +40,7 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
   }, [methodology])
 
   const qualityLabel = methodology.quality.input_label || methodology.quality.label
-  const qualityDefault = methodology.product === 'coffee' ? 86 : 70
+  const qualityDefault = methodology.product === 'coffee' ? 86 : methodology.product === 'cacao' ? 70 : 75
 
   const [form, setForm] = useState<EvaluationInput>({
     product: methodology.product,

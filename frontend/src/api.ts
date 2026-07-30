@@ -124,8 +124,8 @@ export const api = {
       {
         id: 'wine',
         name: 'Nebula Score® Wine',
-        description: 'Próximamente.',
-        available: false,
+        description: 'Evaluación sensorial, fermentación y crianza para vino.',
+        available: true,
       },
     ]),
 
