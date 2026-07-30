@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: nebula-score-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - NEVULA_ENV=development
+      - NEVULA_DATABASE_URL=sqlite:///data/nebula_score.db
+      - NEVULA_CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://localhost:80
+      - NEVULA_HOST=0.0.0.0
+      - NEVULA_PORT=8000
+    volumes:
+      - ./backend:/app/backend:ro
+      - ./methodologies:/app/methodologies:ro
+      - nebula_data:/app/data
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nebula-score-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  nebula_data:
