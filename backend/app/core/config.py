@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     nebula_env: str = "development"
     nebula_database_url: str = "sqlite:///./nebula_score.db"
-    nebula_cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    nebula_cors_origins: str = "http://localhost:5173,http://localhost:3000,https://nhilson73.github.io"
     nebula_host: str = "0.0.0.0"
     nebula_port: int = 8000
     methodologies_path: Path = REPO_ROOT / "methodologies"
