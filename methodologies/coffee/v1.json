@@ -1,0 +1,115 @@
+{
+  "id": "nebula-score-coffee-v1",
+  "product": "coffee",
+  "name": "Nebula Score® Coffee V1",
+  "version": "1.0.0",
+  "status": "experimental",
+  "note": "Modelo técnico en validación. No sustituye certificaciones oficiales ni evaluaciones sensoriales profesionales.",
+  "weights": {
+    "quality": 0.6,
+    "process": 0.3,
+    "integrity": 0.1
+  },
+  "score_range": {
+    "min": 0,
+    "max": 100
+  },
+  "quality": {
+    "label": "Calidad sensorial",
+    "input_variable": "sca_score",
+    "input_range": { "min": 0, "max": 100 },
+    "normalization": {
+      "type": "linear_clamp",
+      "min_input": 80,
+      "max_input": 100,
+      "min_output": 0,
+      "max_output": 100,
+      "formula": "clamp((SCA - 80) / 20, 0, 1) * 100"
+    },
+    "warning": "La normalización SCA 80-100 es una propuesta experimental y debe validarse con datos reales."
+  },
+  "process": {
+    "label": "Proceso de fermentación",
+    "models": {
+      "essential": {
+        "label": "Essential",
+        "equipment_capability": 2,
+        "formula": "0.35T + 0.35pH + 0.30ORP",
+        "fields": [
+          { "id": "temperature", "label": "Índice de temperatura (T)", "weight": 0.35 },
+          { "id": "ph", "label": "Índice de pH", "weight": 0.35 },
+          { "id": "orp", "label": "Índice de ORP", "weight": 0.30 }
+        ]
+      },
+      "insight": {
+        "label": "Insight",
+        "equipment_capability": 4,
+        "formula": "0.20T + 0.20pH + 0.15ORP + 0.40A + 0.05H",
+        "fields": [
+          { "id": "temperature", "label": "Índice de temperatura (T)", "weight": 0.20 },
+          { "id": "ph", "label": "Índice de pH", "weight": 0.20 },
+          { "id": "orp", "label": "Índice de ORP", "weight": 0.15 },
+          { "id": "anaerobic", "label": "Índice de anaerobiosis (A)", "weight": 0.40 },
+          { "id": "homogeneity", "label": "Índice de homogeneidad (H)", "weight": 0.05 }
+        ]
+      },
+      "signature": {
+        "label": "Signature",
+        "equipment_capability": 5,
+        "formula": "0.15T + 0.15pH + 0.10ORP + 0.35A + 0.20B + 0.05H",
+        "fields": [
+          { "id": "temperature", "label": "Índice de temperatura (T)", "weight": 0.15 },
+          { "id": "ph", "label": "Índice de pH", "weight": 0.15 },
+          { "id": "orp", "label": "Índice de ORP", "weight": 0.10 },
+          { "id": "anaerobic", "label": "Índice de anaerobiosis (A)", "weight": 0.35 },
+          { "id": "biology", "label": "Índice biológico (B)", "weight": 0.20 },
+          { "id": "homogeneity", "label": "Índice de homogeneidad (H)", "weight": 0.05 }
+        ]
+      }
+    }
+  },
+  "integrity": {
+    "label": "Integridad y confianza",
+    "components": {
+      "mass_balance": { "label": "Balance de masas", "weight": 0.6 },
+      "documentation": { "label": "Documentación y evidencia", "weight": 0.4 }
+    },
+    "note": "La integridad criptográfica demuestra que un registro no fue alterado, pero no garantiza que el dato original sea correcto."
+  },
+  "confidence": {
+    "label": "Nivel de confianza",
+    "range": { "min": 0, "max": 5 },
+    "note": "Limitado por el componente más débil: equipo, plan y calidad real de la evidencia.",
+    "plan_caps": {
+      "freemium": 1,
+      "basic": 2,
+      "pro": 4,
+      "enterprise": 5
+    }
+  },
+  "penalties": {
+    "label": "Penalizaciones",
+    "max_total": 100,
+    "categories": [
+      "Process deviation",
+      "Missing data",
+      "Sensor integrity",
+      "Calibration",
+      "Traceability",
+      "Mass balance",
+      "Documentation",
+      "Sensory inconsistency",
+      "Manual override",
+      "Critical failure"
+    ]
+  },
+  "classification": {
+    "bands": [
+      { "min": 85, "label": "Sobresaliente", "description": "Resultado integral muy alto. Debe confirmarse la suficiencia de datos y ausencia de condiciones de descalificación." },
+      { "min": 70, "label": "Avanzado", "description": "El microlote combina desempeño fuerte con evidencia relevante; revise las oportunidades de mejora por componente." },
+      { "min": 55, "label": "Competente", "description": "El resultado es prometedor, pero uno o más componentes limitan la calificación integral." },
+      { "min": 40, "label": "En desarrollo", "description": "Se requiere fortalecer calidad sensorial, control de proceso o integridad antes de una afirmación comercial robusta." },
+      { "min": 0, "label": "Insuficiente", "description": "La evidencia o el desempeño disponible no sustentan todavía una calificación Nebula Score® robusta." }
+    ]
+  }
+}
