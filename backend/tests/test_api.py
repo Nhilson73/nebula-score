@@ -95,3 +95,69 @@ def test_import_json(client: TestClient) -> None:
     )
     assert response.status_code == 200
     assert response.json()["imported"] == 1
+
+
+def test_export_csv(client: TestClient) -> None:
+    payload = {
+        "sca_score": 86,
+        "process_values": {"temperature": 80, "ph": 80, "orp": 80, "anaerobic": 80, "homogeneity": 80},
+        "integrity_values": {"mass_balance": 90, "documentation": 90},
+        "penalties": [],
+        "equipment_model": "insight",
+        "origin_plan": "pro",
+        "evidence_quality": 4,
+        "lot_id": "NF-EXPORT-001",
+    }
+    client.post("/api/v1/evaluations", json=payload)
+    response = client.get("/api/v1/export/csv")
+    assert response.status_code == 200
+    assert "lot_id" in response.text
+    assert "NF-EXPORT-001" in response.text
+
+
+def test_evaluation_report(client: TestClient) -> None:
+    payload = {
+        "sca_score": 86,
+        "process_values": {"temperature": 80, "ph": 80, "orp": 80, "anaerobic": 80, "homogeneity": 80},
+        "integrity_values": {"mass_balance": 90, "documentation": 90},
+        "penalties": [],
+        "equipment_model": "insight",
+        "origin_plan": "pro",
+        "evidence_quality": 4,
+        "lot_id": "NF-REPORT-001",
+    }
+    created = client.post("/api/v1/evaluations", json=payload)
+    evaluation_id = created.json()["id"]
+    response = client.get(f"/api/v1/evaluations/{evaluation_id}/report")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["schema"] == "nebula-score-evaluation-v1"
+    assert data["evaluation"]["lot_id"] == "NF-REPORT-001"
+    assert "disclaimer" in data
+
+
+def test_update_and_recalculate(client: TestClient) -> None:
+    payload = {
+        "sca_score": 86,
+        "process_values": {"temperature": 80, "ph": 80, "orp": 80, "anaerobic": 80, "homogeneity": 80},
+        "integrity_values": {"mass_balance": 90, "documentation": 90},
+        "penalties": [],
+        "equipment_model": "insight",
+        "origin_plan": "pro",
+        "evidence_quality": 4,
+        "lot_id": "NF-UPDATE-001",
+    }
+    created = client.post("/api/v1/evaluations", json=payload)
+    evaluation_id = created.json()["id"]
+    response = client.put(
+        f"/api/v1/evaluations/{evaluation_id}",
+        json={"status": "provisional", "lot_id": "NF-UPDATED-001"},
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "provisional"
+    assert data["lot_id"] == "NF-UPDATED-001"
+
+    recalc = client.post(f"/api/v1/evaluations/{evaluation_id}/calculate")
+    assert recalc.status_code == 200
+    assert recalc.json()["nebula_score"] == 51.0
