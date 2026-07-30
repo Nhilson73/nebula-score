@@ -1,5 +1,6 @@
 import { api } from '../api'
 import type { EvaluationResult, Methodology } from '../types'
+import { productLabel } from '../utils/productLabel'
 
 interface Props {
   evaluation: EvaluationResult
@@ -11,7 +12,7 @@ interface Props {
 function ResultView({ evaluation, methodology, onBack, onNew }: Props) {
   const angle = Math.min(evaluation.nebula_score * 3.6, 360)
   const qualityLabel = methodology?.quality.input_label || methodology?.quality.label || 'Sensorial'
-  const productName = evaluation.product === 'cacao' ? 'Cacao' : evaluation.product === 'wine' ? 'Wine' : 'Coffee'
+  const productName = productLabel(evaluation.product)
 
   const exportJson = () => {
     api.getEvaluation(evaluation.public_id)

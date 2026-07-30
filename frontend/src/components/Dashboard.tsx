@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
 import type { EvaluationResult } from '../types'
+import { productLabel } from '../utils/productLabel'
 
 interface Props {
   onNew: () => void
@@ -76,7 +77,7 @@ function Dashboard({ onNew, onView }: Props) {
           <tbody>
             {evaluations.map((ev) => (
               <tr key={ev.public_id}>
-                <td>{ev.product === 'cacao' ? 'Cacao' : 'Coffee'}</td>
+                <td>{productLabel(ev.product)}</td>
                 <td>{ev.lot_id || '—'}</td>
                 <td>{ev.producer || '—'}</td>
                 <td>{ev.equipment_model}</td>
