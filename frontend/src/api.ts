@@ -36,7 +36,8 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   return response.json() as Promise<T>
 }
 
-const baseUrl = ((import.meta as any).env?.BASE_URL as string) || '/'
+const rawBaseUrl = ((import.meta as any).env?.BASE_URL as string) || '/'
+const baseUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl : rawBaseUrl + '/'
 
 async function localMethodology(product: string, version = 'v1'): Promise<Methodology> {
   const response = await fetch(`${baseUrl}methodologies/${product}/${version}.json`)
