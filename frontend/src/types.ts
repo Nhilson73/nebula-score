@@ -19,6 +19,8 @@ export interface Methodology {
   status: string
   note?: string
   weights: { quality: number; process: number; integrity: number }
+  score_range: { min: number; max: number }
+  penalties: { label: string; max_total: number; categories: string[] }
   quality: {
     label: string
     input_variable: string
