@@ -1,6 +1,6 @@
-"""Coffee-specific evaluation entry point.
+"""Cacao-specific evaluation entry point.
 
-This module acts as a thin adapter that loads the Coffee V1 methodology and
+This module acts as a thin adapter that loads the Cacao V1 methodology and
 runs the generic Nebula Score engine.
 """
 
@@ -12,7 +12,7 @@ from backend.app.core.penalty import Penalty
 DEFAULT_METHODOLOGY_VERSION = "v1"
 
 
-def evaluate_coffee(
+def evaluate_cacao(
     *,
     quality_input: float,
     process_values: dict[str, float],
@@ -23,11 +23,11 @@ def evaluate_coffee(
     evidence_quality: int,
     methodology: Methodology | None = None,
 ) -> ScoreResult:
-    """Evaluate a Coffee V1 Nebula Score."""
+    """Evaluate a Cacao V1 Nebula Score."""
     if methodology is None:
-        methodology = load_methodology("coffee", DEFAULT_METHODOLOGY_VERSION)
-    if methodology.product != "coffee":
-        raise ValidationError(f"Expected coffee methodology, got {methodology.product}")
+        methodology = load_methodology("cacao", DEFAULT_METHODOLOGY_VERSION)
+    if methodology.product != "cacao":
+        raise ValidationError(f"Expected cacao methodology, got {methodology.product}")
     return evaluate(
         methodology,
         quality_input=quality_input,

@@ -2,7 +2,7 @@
 
 Plataforma multiproducto para calcular y documentar el **Nebula Score®** de café, cacao y vino. Integra calidad sensorial, control del proceso de fermentación e integridad de la evidencia en una puntuación verificable de 0 a 100.
 
-> **Estado metodológico:** Nebula Score® Coffee V1 es un modelo técnico en validación. No sustituye certificaciones oficiales, cataciones profesionales ni análisis de laboratorios acreditados.
+> **Estado metodológico:** Nebula Score® Coffee V1 y Cacao V1 son modelos técnicos en validación. No sustituyen certificaciones oficiales, cataciones profesionales ni análisis de laboratorios acreditados.
 
 ## Arquitectura
 
@@ -18,7 +18,7 @@ nebula-score/
 │   │   ├── api/       # Rutas FastAPI
 │   │   ├── core/      # Motor genérico, normalización, penalizaciones, confianza
 │   │   ├── models/    # Modelos SQLAlchemy
-│   │   ├── products/  # Motores por producto (coffee)
+│   │   ├── products/  # Motores por producto (coffee, cacao, vino)
 │   │   ├── schemas/   # Pydantic request/response
 │   │   └── services/  # Lógica de negocio
 │   ├── tests/         # Pruebas pytest
@@ -106,27 +106,33 @@ mypy -p backend
 
 ## Métodos y productos
 
-La plataforma soporta múltiples productos. Cada producto tiene su metodología versionada en `methodologies/<producto>/<version>.json`. La única metodología disponible en V1 es:
+La plataforma soporta múltiples productos. Cada producto tiene su metodología versionada en `methodologies/<producto>/<version>.json`. Las metodologías disponibles en V1 son:
 
 - `methodologies/coffee/v1.json` — Nebula Score® Coffee V1
+- `methodologies/cacao/v1.json` — Nebula Score® Cacao V1
 
 Cada evaluación almacena el `methodology_id` y `methodology_version` con los que fue calculada, garantizando reproducibilidad histórica.
 
-## Fórmula Nebula Score® Coffee V1
+## Fórmula Nebula Score®
 
 ```text
-Nebula Score Coffee =
+Nebula Score =
 0.60 × Sensory Score
 + 0.30 × Process Score
 + 0.10 × Integrity Score
 − Penalties
 ```
 
-- **Sensory Score:** `clamp((SCA − 80) / 20, 0, 1) × 100` para SCA entre 0 y 100.
+- **Sensory Score:** normalización configurada por metodología. Para Coffee: `clamp((SCA − 80) / 20, 0, 1) × 100`. Para Cacao: `clamp((licor − 60) / 40, 0, 1) × 100`.
 - **Process Score:** ponderado según el modelo de fermentación: Essential, Insight o Signature.
 - **Integrity Score:** `0.60 × Mass Balance + 0.40 × Documentation/Evidence`.
 - **Penalties:** lista deducible con categorías configurables.
 - **Confidence Level:** `min(equipment_capability, plan_capability, evidence_quality)` en escala 0–5.
+
+Ver detalles en:
+
+- `docs/METHODOLOGY_COFFEE_V1.md`
+- `docs/METHODOLOGY_CACAO_V1.md`
 
 ## API principal
 
@@ -148,7 +154,8 @@ Rutas bajo `/api/v1`:
 ## Estado del proyecto
 
 - Coffee V1: implementado y cubierto por pruebas.
-- Cacao V1 y Wine V1: preparados en la arquitectura; su desarrollo comienza tras la validación de Coffee V1.
+- Cacao V1: implementado y cubierto por pruebas.
+- Wine V1: preparado en la arquitectura; su desarrollo comienza tras la validación de Cacao V1.
 
 ## Marcas y propiedad
 

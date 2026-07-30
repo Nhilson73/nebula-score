@@ -36,7 +36,7 @@ class Evaluation(Base, PublicIdMixin):
     evidence_quality: Mapped[int] = mapped_column(Integer, nullable=False, default=4)
     protocol: Mapped[str | None] = mapped_column(String(256), nullable=True)
 
-    sca_score: Mapped[float] = mapped_column(Float, nullable=False)
+    quality_input: Mapped[float] = mapped_column(Float, nullable=False)
     process_values: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     integrity_values: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     penalties: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)

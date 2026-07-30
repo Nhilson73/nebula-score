@@ -1,14 +1,17 @@
 import { api } from '../api'
-import type { EvaluationResult } from '../types'
+import type { EvaluationResult, Methodology } from '../types'
 
 interface Props {
   evaluation: EvaluationResult
+  methodology?: Methodology | null
   onBack: () => void
   onNew: () => void
 }
 
-function ResultView({ evaluation, onBack, onNew }: Props) {
+function ResultView({ evaluation, methodology, onBack, onNew }: Props) {
   const angle = Math.min(evaluation.nebula_score * 3.6, 360)
+  const qualityLabel = methodology?.quality.input_label || methodology?.quality.label || 'Sensorial'
+  const productName = evaluation.product === 'cacao' ? 'Cacao' : 'Coffee'
 
   const exportJson = () => {
     api.getEvaluation(evaluation.public_id)
@@ -16,7 +19,7 @@ function ResultView({ evaluation, onBack, onNew }: Props) {
         const blob = new Blob([JSON.stringify(res, null, 2)], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
-        const lot = (res.lot_id || 'microlote').replace(/[^a-zA-Z0-9._-]/g, '-')
+        const lot = (res.lot_id || 'lote').replace(/[^a-zA-Z0-9._-]/g, '-')
         a.href = url
         a.download = `nebula-score-${lot}.json`
         a.click()
@@ -47,7 +50,7 @@ function ResultView({ evaluation, onBack, onNew }: Props) {
 
       <div className="breakdown">
         <div>
-          <span>Sensorial (SCA {evaluation.sca_score})</span>
+          <span>{qualityLabel} ({evaluation.quality_input})</span>
           <strong>{evaluation.quality_score.toFixed(1)}</strong>
         </div>
         <div>
@@ -82,7 +85,8 @@ function ResultView({ evaluation, onBack, onNew }: Props) {
       </div>
 
       <div style={{ marginTop: 18, textAlign: 'left', color: 'var(--muted)', fontSize: '0.92rem' }}>
-        <p><strong>Microlote:</strong> {evaluation.lot_id || 'No indicado'}</p>
+        <p><strong>Producto:</strong> {productName}</p>
+        <p><strong>Lote:</strong> {evaluation.lot_id || 'No indicado'}</p>
         <p><strong>Productor:</strong> {evaluation.producer || 'No indicado'}</p>
         <p><strong>Modelo:</strong> {evaluation.equipment_model}</p>
         <p><strong>Metodología:</strong> {evaluation.methodology_id} v{evaluation.methodology_version}</p>
@@ -109,8 +113,8 @@ function ResultView({ evaluation, onBack, onNew }: Props) {
       </div>
 
       <div className="notice" style={{ marginTop: 20 }}>
-        <strong>Estado:</strong> Nebula Score® Coffee V1 es un modelo técnico en validación.
-        No constituye todavía una certificación oficial ni sustituye una catación profesional.
+        <strong>Estado:</strong> Nebula Score® {productName} V1 es un modelo técnico en validación.
+        No constituye todavía una certificación oficial ni sustituye evaluaciones sensoriales profesionales.
       </div>
     </div>
   )

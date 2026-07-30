@@ -56,7 +56,7 @@ def _classify(methodology: Methodology, score: float) -> tuple[str, str]:
 def evaluate(
     methodology: Methodology,
     *,
-    sca_score: float,
+    quality_input: float,
     process_values: dict[str, float],
     integrity_values: dict[str, float],
     penalties: list[Penalty],
@@ -65,7 +65,7 @@ def evaluate(
     evidence_quality: int,
 ) -> ScoreResult:
     """Compute a Nebula Score® evaluation for a methodology and set of inputs."""
-    quality_score = _validate_and_normalize_quality(methodology, sca_score)
+    quality_score = _validate_and_normalize_quality(methodology, quality_input)
 
     process_model = methodology.process.models.get(equipment_model)
     if process_model is None:
@@ -97,7 +97,7 @@ def evaluate(
     components = {
         "quality": {
             "label": methodology.quality.label,
-            "sca_score": round_score(as_number(sca_score), 2),
+            "raw_input": round_score(as_number(quality_input), 2),
             "normalized_score": round_score(quality_score),
             "weight": methodology.weights.quality,
             "weighted_score": round_score(quality_score * methodology.weights.quality),

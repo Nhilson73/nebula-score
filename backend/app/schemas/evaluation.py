@@ -22,6 +22,7 @@ class PenaltyInput(BaseModel):
 
 
 class EvaluationCreate(BaseModel):
+    product: str = "coffee"
     lot_id: str | None = Field(default=None, max_length=128)
     producer: str | None = Field(default=None, max_length=256)
     farm: str | None = Field(default=None, max_length=256)
@@ -38,7 +39,7 @@ class EvaluationCreate(BaseModel):
     evidence_quality: int = Field(default=4, ge=0, le=5)
     protocol: str | None = None
 
-    sca_score: float = Field(..., ge=0, le=100)
+    quality_input: float = Field(..., ge=0, le=100)
     process_values: dict[str, float]
     integrity_values: dict[str, float]
     penalties: list[PenaltyInput] = Field(default_factory=list)
@@ -87,7 +88,7 @@ class EvaluationResponse(BaseModel):
     evidence_quality: int
     protocol: str | None
 
-    sca_score: float
+    quality_input: float
     process_values: dict[str, float]
     integrity_values: dict[str, float]
     penalties: list[dict[str, Any]]

@@ -24,6 +24,7 @@ class NormalizationSpec(BaseModel):
 class QualitySpec(BaseModel):
     label: str
     input_variable: str
+    input_label: str | None = None
     input_range: RangeSpec
     normalization: NormalizationSpec
     warning: str | None = None

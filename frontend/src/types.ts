@@ -22,6 +22,7 @@ export interface Methodology {
   quality: {
     label: string
     input_variable: string
+    input_label?: string
     input_range: { min: number; max: number }
     normalization: { min_input: number; max_input: number; min_output: number; max_output: number; formula?: string }
     warning?: string
@@ -33,6 +34,7 @@ export interface Methodology {
 }
 
 export interface EvaluationInput {
+  product: string
   lot_id?: string
   producer?: string
   farm?: string
@@ -48,7 +50,7 @@ export interface EvaluationInput {
   origin_plan: string
   evidence_quality: number
   protocol?: string
-  sca_score: number | string
+  quality_input: number | string
   process_values: Record<string, number | string>
   integrity_values: Record<string, number | string>
   penalties: PenaltyInput[]
@@ -88,7 +90,7 @@ export interface EvaluationResult {
   origin_plan: string
   evidence_quality: number
   protocol?: string
-  sca_score: number
+  quality_input: number
   process_values: Record<string, number>
   integrity_values: Record<string, number>
   penalties: PenaltyInput[]

@@ -7,11 +7,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - NEVULA_ENV=development
-      - NEVULA_DATABASE_URL=sqlite:///data/nebula_score.db
-      - NEVULA_CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://localhost:80
-      - NEVULA_HOST=0.0.0.0
-      - NEVULA_PORT=8000
+      - nebula_env=development
+      - nebula_database_url=sqlite:////app/data/nebula_score.db
+      - nebula_cors_origins=http://localhost:5173,http://localhost:3000,http://localhost
+      - nebula_host=0.0.0.0
+      - nebula_port=8000
     volumes:
       - ./backend:/app/backend:ro
       - ./methodologies:/app/methodologies:ro

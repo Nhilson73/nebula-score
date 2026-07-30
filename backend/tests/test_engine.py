@@ -14,7 +14,7 @@ def coffee_methodology() -> Methodology:
 def test_perfect_insight_score(coffee_methodology: Methodology) -> None:
     result = evaluate(
         coffee_methodology,
-        sca_score=100,
+        quality_input=100,
         process_values={"temperature": 100, "ph": 100, "orp": 100, "anaerobic": 100, "homogeneity": 100},
         integrity_values={"mass_balance": 100, "documentation": 100},
         penalties=[],
@@ -30,7 +30,7 @@ def test_perfect_insight_score(coffee_methodology: Methodology) -> None:
 def test_sca_below_min_clamps_quality(coffee_methodology: Methodology) -> None:
     result = evaluate(
         coffee_methodology,
-        sca_score=70,
+        quality_input=70,
         process_values={"temperature": 100, "ph": 100, "orp": 100, "anaerobic": 100, "homogeneity": 100},
         integrity_values={"mass_balance": 100, "documentation": 100},
         penalties=[],
@@ -45,7 +45,7 @@ def test_sca_below_min_clamps_quality(coffee_methodology: Methodology) -> None:
 def test_sca_above_max_uses_max(coffee_methodology: Methodology) -> None:
     result = evaluate(
         coffee_methodology,
-        sca_score=105,
+        quality_input=105,
         process_values={"temperature": 100, "ph": 100, "orp": 100, "anaerobic": 100, "homogeneity": 100},
         integrity_values={"mass_balance": 100, "documentation": 100},
         penalties=[],
@@ -59,7 +59,7 @@ def test_sca_above_max_uses_max(coffee_methodology: Methodology) -> None:
 def test_penalty_exceeds_subtotal_clamps_zero(coffee_methodology: Methodology) -> None:
     result = evaluate(
         coffee_methodology,
-        sca_score=80,
+        quality_input=80,
         process_values={"temperature": 0, "ph": 0, "orp": 0, "anaerobic": 0, "homogeneity": 0},
         integrity_values={"mass_balance": 0, "documentation": 0},
         penalties=[Penalty(code="P1", name="Big penalty", category="Critical failure", severity="critical", value=200)],
@@ -73,7 +73,7 @@ def test_penalty_exceeds_subtotal_clamps_zero(coffee_methodology: Methodology) -
 def test_confidence_limited_by_plan(coffee_methodology: Methodology) -> None:
     result = evaluate(
         coffee_methodology,
-        sca_score=90,
+        quality_input=90,
         process_values={"temperature": 80, "ph": 80, "orp": 80, "anaerobic": 80, "homogeneity": 80},
         integrity_values={"mass_balance": 80, "documentation": 80},
         penalties=[],
@@ -87,7 +87,7 @@ def test_confidence_limited_by_plan(coffee_methodology: Methodology) -> None:
 def test_confidence_limited_by_equipment(coffee_methodology: Methodology) -> None:
     result = evaluate(
         coffee_methodology,
-        sca_score=90,
+        quality_input=90,
         process_values={"temperature": 80, "ph": 80, "orp": 80},
         integrity_values={"mass_balance": 80, "documentation": 80},
         penalties=[],
@@ -102,7 +102,7 @@ def test_invalid_equipment_model_raises(coffee_methodology: Methodology) -> None
     with pytest.raises(ValidationError):
         evaluate(
             coffee_methodology,
-            sca_score=86,
+            quality_input=86,
             process_values={"temperature": 80},
             integrity_values={"mass_balance": 80, "documentation": 80},
             penalties=[],
@@ -115,7 +115,7 @@ def test_invalid_equipment_model_raises(coffee_methodology: Methodology) -> None
 def test_essential_weights_sum_and_score(coffee_methodology: Methodology) -> None:
     result = evaluate(
         coffee_methodology,
-        sca_score=86,
+        quality_input=86,
         process_values={"temperature": 80, "ph": 80, "orp": 80},
         integrity_values={"mass_balance": 90, "documentation": 90},
         penalties=[],
