@@ -43,8 +43,8 @@ function Dashboard({ onNew, onView }: Props) {
           <strong>{avg.toFixed(1)}</strong>
         </div>
         <div className="kpi">
-          <span>Producto activo</span>
-          <strong>Coffee</strong>
+          <span>Productos activos</span>
+          <strong>Coffee · Cacao</strong>
         </div>
       </div>
 
@@ -63,7 +63,8 @@ function Dashboard({ onNew, onView }: Props) {
         <table className="table">
           <thead>
             <tr>
-              <th>Microlote</th>
+              <th>Producto</th>
+              <th>Lote</th>
               <th>Productor</th>
               <th>Modelo</th>
               <th>Score</th>
@@ -75,6 +76,7 @@ function Dashboard({ onNew, onView }: Props) {
           <tbody>
             {evaluations.map((ev) => (
               <tr key={ev.public_id}>
+                <td>{ev.product === 'cacao' ? 'Cacao' : 'Coffee'}</td>
                 <td>{ev.lot_id || '—'}</td>
                 <td>{ev.producer || '—'}</td>
                 <td>{ev.equipment_model}</td>

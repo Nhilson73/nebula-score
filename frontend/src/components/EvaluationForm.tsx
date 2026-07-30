@@ -22,12 +22,16 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const initialModelId = useMemo(() => Object.keys(methodology.process.models)[0] || 'insight', [methodology])
+
   const initialProcess = useMemo(() => {
-    const model = methodology.process.models.insight
+    const model = methodology.process.models[initialModelId]
     const values: Record<string, number | string> = {}
-    model.fields.forEach((f) => { values[f.id] = 85 })
+    if (model) {
+      model.fields.forEach((f) => { values[f.id] = 85 })
+    }
     return values
-  }, [methodology])
+  }, [methodology, initialModelId])
 
   const initialIntegrity = useMemo(() => {
     const values: Record<string, number | string> = {}
@@ -35,11 +39,15 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
     return values
   }, [methodology])
 
+  const qualityLabel = methodology.quality.input_label || methodology.quality.label
+  const qualityDefault = methodology.product === 'coffee' ? 86 : 70
+
   const [form, setForm] = useState<EvaluationInput>({
-    equipment_model: 'insight',
+    product: methodology.product,
+    equipment_model: initialModelId,
     origin_plan: 'pro',
     evidence_quality: 4,
-    sca_score: 86,
+    quality_input: qualityDefault,
     process_values: initialProcess,
     integrity_values: initialIntegrity,
     penalties: [],
@@ -61,10 +69,10 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
 
   const handleModelChange = (modelId: string) => {
     const model = methodology.process.models[modelId]
+    if (!model) return
     const values: Record<string, number | string> = {}
     model.fields.forEach((f) => { values[f.id] = form.process_values[f.id] ?? 85 })
-    updateField('equipment_model', modelId)
-    updateField('process_values', values)
+    setForm((prev) => ({ ...prev, equipment_model: modelId, process_values: values }))
   }
 
   const addPenalty = () => {
@@ -90,7 +98,7 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
     try {
       const payload = {
         ...form,
-        sca_score: Number(form.sca_score),
+        quality_input: Number(form.quality_input),
         evidence_quality: Number(form.evidence_quality),
         process_values: Object.fromEntries(
           Object.entries(form.process_values).map(([k, v]) => [k, Number(v)])
@@ -114,7 +122,7 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
       <div className="section-heading">
         <div>
           <h2>Nueva evaluación</h2>
-          <p>Complete los datos del microlote y del modelo de fermentación.</p>
+          <p>Complete los datos del lote y del modelo de fermentación.</p>
         </div>
       </div>
 
@@ -124,7 +132,7 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
         <legend>Identificación</legend>
         <div className="grid two">
           <label>
-            Microlote
+            Lote / microlote
             <input value={form.lot_id || ''} onChange={(e) => updateField('lot_id', e.target.value)} />
           </label>
           <label>
@@ -138,21 +146,21 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
         <legend>Calidad sensorial</legend>
         <div className="grid two">
           <label>
-            Puntuación SCA
+            Puntuación {qualityLabel}
             <input
               type="number"
               min={methodology.quality.input_range.min}
               max={methodology.quality.input_range.max}
               step="0.01"
-              value={form.sca_score}
-              onChange={(e) => updateField('sca_score', e.target.value)}
+              value={form.quality_input}
+              onChange={(e) => updateField('quality_input', e.target.value)}
             />
             <small>{methodology.quality.warning}</small>
           </label>
           <div className="metric-preview">
             <span>Score normalizado</span>
             <strong>
-              {normalizedScore(Number(form.sca_score), methodology.quality.normalization.min_input, methodology.quality.normalization.max_input).toFixed(1)}
+              {normalizedScore(Number(form.quality_input), methodology.quality.normalization.min_input, methodology.quality.normalization.max_input).toFixed(1)}
             </strong>
             <small>{methodology.quality.normalization.formula}</small>
           </div>
@@ -172,12 +180,12 @@ function EvaluationForm({ methodology, onCancel, onCreated }: Props) {
           </label>
           <div className="metric-preview">
             <span>Fórmula</span>
-            <strong style={{ fontSize: '1rem' }}>{selectedModel.formula}</strong>
-            <small>Equipo permite confianza máxima {selectedModel.equipment_capability}/5</small>
+            <strong style={{ fontSize: '1rem' }}>{selectedModel?.formula || '—'}</strong>
+            <small>Equipo permite confianza máxima {selectedModel?.equipment_capability || '—'}/5</small>
           </div>
         </div>
         <div className="grid three" style={{ marginTop: 18 }}>
-          {selectedModel.fields.map((field) => (
+          {selectedModel?.fields.map((field) => (
             <label key={field.id}>
               {field.label}
               <input

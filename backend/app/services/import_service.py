@@ -32,6 +32,7 @@ def _flatten_record(record: dict[str, Any]) -> dict[str, Any]:
     `penalties`.
     """
     payload: dict[str, Any] = {
+        "product": record.get("product") or "coffee",
         "lot_id": record.get("lot_id") or record.get("lot"),
         "producer": record.get("producer"),
         "farm": record.get("farm") or record.get("finca"),
@@ -47,7 +48,9 @@ def _flatten_record(record: dict[str, Any]) -> dict[str, Any]:
         "origin_plan": record.get("origin_plan") or record.get("plan") or "pro",
         "evidence_quality": _parse_value(record.get("evidence_quality") or record.get("evidence")) or 4,
         "protocol": record.get("protocol"),
-        "sca_score": _parse_value(record.get("sca_score") or record.get("sca")) or 0,
+        "quality_input": _parse_value(
+            record.get("quality_input") or record.get("liquor_score") or record.get("sca_score") or record.get("sca")
+        ) or 0,
         "process_values": {},
         "integrity_values": {},
         "penalties": [],

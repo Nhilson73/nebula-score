@@ -21,7 +21,7 @@ El resultado se limita al rango `[0, 100]`.
 
 ## Componente sensorial
 
-- Variable de entrada: `sca_score` (0–100).
+- Variable de entrada: `quality_input` (0–100). Para Coffee representa el SCA score.
 - Normalización:
 
 ```text

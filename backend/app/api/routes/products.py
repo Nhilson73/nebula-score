@@ -15,7 +15,7 @@ PRODUCTS = [
         "id": "cacao",
         "name": "Nebula Score® Cacao",
         "description": "Evaluación de fermentación, defectos, calidad física y trazabilidad para cacao.",
-        "available": False,
+        "available": True,
     },
     {
         "id": "wine",

@@ -3,12 +3,12 @@ from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
 
+from backend.app.core.engine import evaluate
 from backend.app.core.exceptions import MethodologyNotFoundError, ValidationError
 from backend.app.core.methodology import load_methodology
 from backend.app.core.penalty import Penalty
 from backend.app.models.audit import AuditLog
 from backend.app.models.evaluation import Evaluation
-from backend.app.products.coffee.engine import evaluate_coffee
 from backend.app.schemas.common import EvaluationStatus
 from backend.app.schemas.evaluation import EvaluationCreate, EvaluationUpdate
 
@@ -36,25 +36,25 @@ def _status(value: str | None) -> str:
 
 def create_evaluation(db: Session, data: EvaluationCreate) -> Evaluation:
     try:
-        methodology = load_methodology("coffee", "v1")
+        methodology = load_methodology(data.product, "v1")
     except MethodologyNotFoundError as exc:
         raise ValidationError(str(exc)) from exc
 
     penalties = [item.to_penalty() for item in data.penalties]
-    result = evaluate_coffee(
-        sca_score=data.sca_score,
+    result = evaluate(
+        methodology,
+        quality_input=data.quality_input,
         process_values=data.process_values,
         integrity_values=data.integrity_values,
         penalties=penalties,
         equipment_model=data.equipment_model,
         origin_plan=data.origin_plan,
         evidence_quality=data.evidence_quality,
-        methodology=methodology,
     )
 
     evaluation = Evaluation(
         public_id=str(uuid.uuid4()),
-        product="coffee",
+        product=data.product,
         methodology_id=methodology.id,
         methodology_version=methodology.version,
         status=_status(None),
@@ -73,7 +73,7 @@ def create_evaluation(db: Session, data: EvaluationCreate) -> Evaluation:
         origin_plan=data.origin_plan,
         evidence_quality=data.evidence_quality,
         protocol=data.protocol,
-        sca_score=data.sca_score,
+        quality_input=data.quality_input,
         process_values=data.process_values,
         integrity_values=data.integrity_values,
         penalties=[p.__dict__ for p in penalties],
@@ -134,15 +134,15 @@ def update_evaluation(
 def recalculate_evaluation(db: Session, evaluation: Evaluation) -> Evaluation:
     """Recalculate an existing evaluation using the methodology version it was created with."""
     methodology = load_methodology(evaluation.product, f"v{evaluation.methodology_version.split('.')[0]}")
-    result = evaluate_coffee(
-        sca_score=evaluation.sca_score,
+    result = evaluate(
+        methodology,
+        quality_input=evaluation.quality_input,
         process_values=evaluation.process_values,
         integrity_values=evaluation.integrity_values,
         penalties=[Penalty(**p) for p in evaluation.penalties],
         equipment_model=evaluation.equipment_model,
         origin_plan=evaluation.origin_plan,
         evidence_quality=evaluation.evidence_quality,
-        methodology=methodology,
     )
     evaluation.quality_score = result.quality_score
     evaluation.process_score = result.process_score

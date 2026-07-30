@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.0] — 2026-07-30
+
+### Added
+
+- Metodología Nebula Score® Cacao V1 en `methodologies/cacao/v1.json`.
+- Motor de Cacao (`backend/app/products/cacao/engine.py`) con modelos Essential, Insight y Signature adaptados a fermentación de cacao.
+- Selector de producto en el frontend para alternar entre Coffee y Cacao.
+- Soporte de evaluación para cacao en la API: `product` en `EvaluationCreate` y carga dinámica de metodología.
+- Tests del motor de Cacao y de la API para evaluaciones cacao.
+
+### Changed
+
+- Campo `sca_score` renombrado a `quality_input` en modelo, esquemas, motor y frontend para hacer el motor agnóstico del producto.
+- `EvaluationForm` y `ResultView` usan el label y fórmula de calidad definidos por la metodología activa.
+- Dashboard muestra la columna Producto para evaluaciones mixtas.
+
 ## [1.0.0] — 2026-07-30
 
 ### Added
