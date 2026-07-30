@@ -1,6 +1,9 @@
 import type { EvaluationInput, EvaluationResult, Methodology, Paginated } from './types'
 
-const API_BASE = '/api'
+const API_BASE =
+  typeof window !== 'undefined' && (window as unknown as { NEBULA_API_BASE?: string }).NEBULA_API_BASE
+    ? (window as unknown as { NEBULA_API_BASE: string }).NEBULA_API_BASE
+    : '/api'
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${url}`, {
