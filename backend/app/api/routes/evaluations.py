@@ -84,17 +84,4 @@ def report_evaluation(evaluation_id: str | int, db: Session = Depends(get_db)) -
 
 
 def _serialize_evaluation(evaluation: Any) -> dict[str, Any]:
-    return {
-        "id": evaluation.id,
-        "public_id": evaluation.public_id,
-        "product": evaluation.product,
-        "methodology_id": evaluation.methodology_id,
-        "methodology_version": evaluation.methodology_version,
-        "status": evaluation.status,
-        "lot_id": evaluation.lot_id,
-        "producer": evaluation.producer,
-        "nebula_score": evaluation.nebula_score,
-        "confidence_level": evaluation.confidence_level,
-        "classification": evaluation.classification,
-        "created_at": evaluation.created_at.isoformat() if evaluation.created_at else None,
-    }
+    return EvaluationResponse.model_validate(evaluation).model_dump()

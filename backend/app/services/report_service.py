@@ -102,7 +102,13 @@ def export_evaluations_csv(db: Session, *, limit: int = 1000) -> str:
     if not evaluations:
         return ""
     rows = [_flatten_evaluation(ev) for ev in evaluations]
-    fieldnames = list(rows[0].keys())
+    fieldnames: list[str] = []
+    seen: set[str] = set()
+    for row in rows:
+        for key in row:
+            if key not in seen:
+                seen.add(key)
+                fieldnames.append(key)
     output = io.StringIO()
     writer = csv.DictWriter(output, fieldnames=fieldnames)
     writer.writeheader()
