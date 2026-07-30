@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Calculadora Nebula Score® Coffee V1">
+  <title>Nebula Score® Coffee V1</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content">
+      <p class="eyebrow">Nebula Ecosystem®</p>
+      <h1>Nebula Score® Coffee V1</h1>
+      <p class="hero__lead">Calidad sensorial, control de fermentación e integridad de evidencia en una sola puntuación verificable.</p>
+      <div class="formula">60% Sensorial + 30% Proceso + 10% Integridad − Penalizaciones</div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card input-panel" aria-labelledby="input-title">
+      <div class="section-heading">
+        <p class="step">01</p>
+        <div>
+          <h2 id="input-title">Datos del microlote</h2>
+          <p>Complete la evaluación sensorial, seleccione el modelo Nebula Fermentation® y registre los índices disponibles.</p>
+        </div>
+      </div>
+
+      <form id="score-form">
+        <fieldset>
+          <legend>Identificación</legend>
+          <div class="grid two">
+            <label>Microlote
+              <input id="lot-id" type="text" placeholder="Ej. NF-2026-001">
+            </label>
+            <label>Productor o finca
+              <input id="producer" type="text" placeholder="Ej. Finca Paradero">
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Calidad sensorial</legend>
+          <div class="grid two">
+            <label>Puntuación SCA
+              <input id="sca-score" type="number" min="0" max="100" step="0.01" value="86" required>
+              <small>La versión V1 normaliza el rango 80–100.</small>
+            </label>
+            <div class="metric-preview">
+              <span>Sensory Score normalizado</span>
+              <strong id="sensory-preview">30.0</strong>
+              <small>clamp((SCA − 80) / 20) × 100</small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Modelo y desempeño del proceso</legend>
+          <div class="grid two">
+            <label>Modelo Nebula Fermentation®
+              <select id="model">
+                <option value="essential">Essential</option>
+                <option value="insight" selected>Insight</option>
+                <option value="signature">Signature</option>
+              </select>
+            </label>
+            <div class="metric-preview">
+              <span>Process Score calculado</span>
+              <strong id="process-preview">0.0</strong>
+              <small id="model-formula"></small>
+            </div>
+          </div>
+
+          <div id="process-inputs" class="grid three"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Integridad y confianza</legend>
+          <div class="grid three">
+            <label>Balance de masas
+              <input id="mass-balance" type="number" min="0" max="100" step="0.1" value="90">
+            </label>
+            <label>Documentación y evidencia
+              <input id="documentation" type="number" min="0" max="100" step="0.1" value="90">
+            </label>
+            <label>Penalizaciones
+              <input id="penalties" type="number" min="0" max="100" step="0.1" value="0">
+            </label>
+          </div>
+
+          <div class="grid two">
+            <label>Plan Nebula OriginBlok®
+              <select id="origin-plan">
+                <option value="1">Freemium — nivel máximo 1</option>
+                <option value="2">Basic — nivel máximo 2</option>
+                <option value="4" selected>Pro — nivel máximo 4</option>
+                <option value="5">Enterprise — nivel máximo 5</option>
+              </select>
+            </label>
+            <label>Calidad real de la evidencia
+              <select id="evidence-level">
+                <option value="0">0 — Sin evidencia suficiente</option>
+                <option value="1">1 — Evidencia mínima</option>
+                <option value="2">2 — Evidencia básica</option>
+                <option value="3">3 — Evidencia intermedia</option>
+                <option value="4" selected>4 — Evidencia avanzada</option>
+                <option value="5">5 — Evidencia completa</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit">Calcular Nebula Score®</button>
+          <button id="reset-button" class="secondary" type="button">Restablecer</button>
+        </div>
+      </form>
+    </section>
+
+    <aside class="card result-panel" aria-live="polite">
+      <div class="section-heading compact">
+        <p class="step">02</p>
+        <div>
+          <h2>Resultado</h2>
+          <p id="result-status">Modelo técnico V1</p>
+        </div>
+      </div>
+
+      <div class="score-ring" id="score-ring">
+        <div>
+          <span id="final-score">—</span>
+          <small>/100</small>
+        </div>
+      </div>
+
+      <h3 id="classification">Complete los datos</h3>
+      <p id="interpretation">El resultado debe interpretarse junto con sus componentes y el nivel de confianza.</p>
+
+      <div class="breakdown">
+        <div><span>Sensorial</span><strong id="sensory-result">—</strong></div>
+        <div><span>Proceso</span><strong id="process-result">—</strong></div>
+        <div><span>Integridad</span><strong id="integrity-result">—</strong></div>
+        <div><span>Penalizaciones</span><strong id="penalty-result">—</strong></div>
+      </div>
+
+      <div class="confidence">
+        <span>Confidence Level</span>
+        <strong id="confidence-result">—/5</strong>
+        <small>Limitado por equipo, plan OriginBlok® y calidad real de la evidencia.</small>
+      </div>
+
+      <div class="result-meta">
+        <p><strong>Microlote:</strong> <span id="meta-lot">No indicado</span></p>
+        <p><strong>Productor:</strong> <span id="meta-producer">No indicado</span></p>
+        <p><strong>Modelo:</strong> <span id="meta-model">Insight</span></p>
+      </div>
+
+      <button id="export-button" class="secondary full" type="button">Descargar resultado JSON</button>
+    </aside>
+
+    <section class="card methodology">
+      <div class="section-heading">
+        <p class="step">03</p>
+        <div>
+          <h2>Metodología V1</h2>
+          <p>La puntuación única no reemplaza la lectura de los componentes.</p>
+        </div>
+      </div>
+      <div class="method-grid">
+        <article>
+          <h3>Sensorial — 60%</h3>
+          <p>Normaliza la puntuación SCA en la escala incremental 80–100. Esta transformación debe validarse con datos reales antes de su uso comercial definitivo.</p>
+        </article>
+        <article>
+          <h3>Proceso — 30%</h3>
+          <p>Usa fórmulas distintas para Essential, Insight y Signature según la profundidad de sensores y evidencia del proceso.</p>
+        </article>
+        <article>
+          <h3>Integridad — 10%</h3>
+          <p>Combina 60% balance de masas y 40% documentación y evidencia, sin asumir que blockchain corrige datos originales incorrectos.</p>
+        </article>
+      </div>
+      <div class="notice">
+        <strong>Estado:</strong> Nebula Score® Coffee V1 es un modelo técnico en validación. No constituye todavía una certificación oficial ni sustituye una catación profesional.
+      </div>
+    </section>
+
+    <section class="card roadmap">
+      <div class="section-heading">
+        <p class="step">04</p>
+        <div>
+          <h2>Arquitectura multiproducto</h2>
+          <p>La metodología se extenderá conservando el núcleo común y adaptando la evaluación técnica y sensorial.</p>
+        </div>
+      </div>
+      <div class="roadmap-grid">
+        <article class="active">
+          <span>Disponible</span>
+          <h3>Café</h3>
+          <p>SCA, fermentación, anaerobiosis, biología, homogeneidad y trazabilidad.</p>
+        </article>
+        <article>
+          <span>Próxima versión</span>
+          <h3>Cacao</h3>
+          <p>Fermentación interna del grano, corte, índice de fermentación, acidez, polifenoles, cadmio, secado y perfil sensorial.</p>
+        </article>
+        <article>
+          <span>Fase posterior</span>
+          <h3>Vino</h3>
+          <p>Madurez de uva, cinética fermentativa, estabilidad, composición, defectos, evaluación sensorial y procedencia.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Nebula Score® · Nebula Fermentation® · Nebula OriginBlok®</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
