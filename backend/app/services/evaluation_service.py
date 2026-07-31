@@ -11,6 +11,7 @@ from backend.app.models.audit import AuditLog
 from backend.app.models.evaluation import Evaluation
 from backend.app.schemas.common import EvaluationStatus
 from backend.app.schemas.evaluation import EvaluationCreate, EvaluationUpdate
+from backend.app.services.marketplace_client import publish_evaluation_to_marketplace
 
 
 def _build_audit(
@@ -92,6 +93,12 @@ def create_evaluation(db: Session, data: EvaluationCreate) -> Evaluation:
     db.refresh(evaluation)
     _build_audit(db, evaluation.id, "created", details="Evaluation created and scored")
     db.commit()
+
+    publish_evaluation_to_marketplace(
+        evaluation.public_id,
+        lot_name=evaluation.lot_id,
+    )
+
     return evaluation
 
 

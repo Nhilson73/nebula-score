@@ -1,5 +1,6 @@
 import json
 
+import pytest
 from fastapi.testclient import TestClient
 
 
@@ -192,3 +193,37 @@ def test_products_lists_cacao(client: TestClient) -> None:
     assert "cacao" in ids
     cacao = next(p for p in data if p["id"] == "cacao")
     assert cacao["available"] is True
+
+
+def test_create_evaluation_publishes_to_marketplace(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    from unittest.mock import MagicMock, patch
+
+    from backend.app.core.config import settings
+
+    monkeypatch.setattr(settings, "nebula_marketplace_api_base_url", "http://localhost:8002/api/v1")
+
+    mock_response = MagicMock()
+    mock_response.is_success = True
+    mock_response.json.return_value = {"public_id": "marketplace-lot-123"}
+
+    payload = {
+        "quality_input": 86,
+        "process_values": {"temperature": 80, "ph": 80, "orp": 80, "anaerobic": 80, "homogeneity": 80},
+        "integrity_values": {"mass_balance": 90, "documentation": 90},
+        "penalties": [],
+        "equipment_model": "insight",
+        "origin_plan": "pro",
+        "evidence_quality": 4,
+        "lot_id": "NF-MARKET-001",
+        "producer": "Finca Marketplace",
+    }
+
+    with patch("backend.app.services.marketplace_client.httpx.post", return_value=mock_response) as mock_post:
+        response = client.post("/api/v1/evaluations", json=payload)
+
+    assert response.status_code == 201
+    mock_post.assert_called_once()
+    call_args = mock_post.call_args
+    assert call_args[0][0] == "http://localhost:8002/api/v1/lots/import-from-score"
+    assert call_args[1]["json"]["nebula_score_public_id"] == response.json()["public_id"]
+    assert call_args[1]["json"]["status"] == "published"
