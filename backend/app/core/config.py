@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     nebula_cors_origins: str = "http://localhost:5173,http://localhost:3000,https://nhilson73.github.io"
     nebula_host: str = "0.0.0.0"
     nebula_port: int = 8000
+    nebula_marketplace_api_base_url: str = ""
     methodologies_path: Path = REPO_ROOT / "methodologies"
 
     @property

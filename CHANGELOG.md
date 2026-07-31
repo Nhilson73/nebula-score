@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Auto-publicación opcional de evaluaciones a `nebula-marketplace` mediante `NEBULA_MARKETPLACE_API_BASE_URL`.
+- Cliente `backend/app/services/marketplace_client.py` que envía `POST /api/v1/lots/import-from-score` tras crear una evaluación.
+
 ## [1.2.0] — 2026-07-30
 
 ### Added
